@@ -22,7 +22,7 @@ time_table = {
 down = {("Jan", "grinder"): 1, ("Feb", "horiDrill"): 2, ("Mar", "borer"): 1, ("Apr", "vertDrill"): 1,
        ("May", "grinder"): 1, ("May", "vertDrill"): 1, ("Jun", "horiDrill"): 1}
 
-# Ahora tú define un diccionario con el limite de ventas por mes por producto. Puedes guarte con el time_table.
+# Ahora tú define un diccionario con el limite de ventas por mes por producto. Puedes guiarte con el time_table.
 upper = {}
 
 # parametros constantes
@@ -34,26 +34,38 @@ hoursPerMonth = 2*8*24
 # Creamos un modelo vacío
 model = Model("Factory Planning Equipo Rocket")
 
-# Crea y rellenar diccionarios de variables manufactura b_t,p , almacenada s_t,p , vendida u_t,p
-# Por ejemplo para la variable de manfucatura hacemos lo siguiente
-manu = {} #Cantidad manufacturada
+# Crea y rellenar diccionarios para las variables de cantidad manufactura (b_t,p) , almacenada (s_t,p) y vendida (u_t,p)
+# Por ejemplo para la variable de manufactura hacemos lo siguiente
+manu = {}  # Cantidad manufacturada
 
 for month in months:
     for product in products:
         manu[month, product] = model.addVar(vtype=GRB.INTEGER, name="manu_{}_{}".format(month, product))
 
+# Ahora hazlo tambien para la cantidad almacenada y vendida
+sell = {}  # Cantidad almacenada
+held = {}  # Cantidad vendida
+
 # Llama a update para agregar las variables al modelo
 
-# Crea restricciones de inventario
+# Restriccion de inventario
+for month_index, month in enumerate(months):
+    for product in products:
+        if month_index == 0:
+            model.addConstr(manu[month, product] == sell[month, product] + held[month, product],
+                            "balance_{}_{}".format(month, product))
+        else:
+            model.addConstr(held[months[month_index-1], product] + manu[month, product] ==
+                            sell[month, product] + held[month, product], "balance_{}_{}".format(month, product))
 
-# Crea la restriccion que fuerza que al final de los meses la cantidad almacenada sea la cantidad especifica
-# de cada producto
 
-# Restricción de almacenaje según capacidad de la tienda
+# Ahora crea la restriccion que fuerza que al final del último mes haya cierta cantidad almacenada de cada producto
 
-# Restriccion de no sobrepasar maximo de horas disponibles
+# Crea la restricción de almacenaje según capacidad de la tienda
 
-# Funcion objetivo
+# Crea la restriccion de no sobrepasar maximo de horas disponibles
+
+# Escribe la funcion objetivo
 
 # Optimiza tu problema
 
