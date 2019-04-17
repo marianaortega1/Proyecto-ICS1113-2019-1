@@ -10,8 +10,11 @@ profit_contribution = {"Prod1": 30, "Prod2": 6, "Prod3" : 8, "Prod4": 4, "Prod5"
 qMachine = {"grinder": 4, "vertDrill": 2, "horiDrill": 3, "borer": 1, "planer": 1}
 
 # Definir tiempo de producción requerido por producto por máquina f_p,m
+# Como veras, time_table es un diccionario de diccionarios. Si haces time_table["grinder"] ingresaras al diccionario
+# siguiente {"Prod1": 0.5, "Prod2": 0.7, "Prod5": 0.3, "Prod6": 0.2, "Prod7": 0.5} y si haces
+# time_table["grinder]["Prod1"] entras al valor 0.5. Esto es que el Prod1 se demora 0.5 horas en la máquina grinder
 time_table = {
-    "grinder" : {"Prod1": 0.5, "Prod2": 0.7, "Prod5": 0.3, "Prod6": 0.2, "Prod7": 0.5},
+    "grinder": {"Prod1": 0.5, "Prod2": 0.7, "Prod5": 0.3, "Prod6": 0.2, "Prod7": 0.5},
     "vertDrill": {"Prod1": 0.1, "Prod2": 0.2, "Prod4": 0.3, "Prod6": 0.6},
     "horiDrill": {"Prod1": 0.2, "Prod3": 0.8, "Prod7": 0.6},
     "borer": {"Prod1": 0.05, "Prod2": 0.03, "Prod4": 0.07, "Prod5": 0.1, "Prod7": 0.08},
@@ -26,10 +29,10 @@ down = {("Jan", "grinder"): 1, ("Feb", "horiDrill"): 2, ("Mar", "borer"): 1, ("A
 upper = {}
 
 # parametros constantes
-storeCost = 0.5
-storeCapacity = 100
-endStock = 50
-hoursPerMonth = 2*8*24
+r = 0.5  # Costo unidad almacenada por mes
+z = 100  # Maxima cantidad almacenada de cada producto cada mes
+w = 50  # Cantidad almacenada de cada producto al ultimo mes
+g = 2*8*24  # Horas por maquina en un mes
 
 # Creamos un modelo vacío
 model = Model("Factory Planning Equipo Rocket")
@@ -64,6 +67,8 @@ for month_index, month in enumerate(months):
 # Crea la restricción de almacenaje según capacidad de la tienda
 
 # Crea la restriccion de no sobrepasar maximo de horas disponibles
+
+# Crea la restricción de la cantidad máxima que se puede vender de cada producto en cada mes
 
 # Escribe la funcion objetivo
 
